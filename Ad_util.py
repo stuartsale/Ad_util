@@ -40,7 +40,9 @@ class map_regions:
 
     def __init__(self, dirname="data/"):
 
-        self.dirname = dirname
+        base_dir = _dir = path.dirname(__file__)
+
+        self.dirname = path.join(base_dir,dirname)
         self.map_dicts = {}
 
     def query(self, l, b):
