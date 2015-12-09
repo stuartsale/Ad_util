@@ -3,19 +3,20 @@ import json
 import math
 import glob
 import itertools
+from os import path
 
-def sorted_dict_make(dirname=""):
+def sorted_dict_make(dirname="data/"):
 
-    map_list=glob.glob("*_map.json")
+    map_list=glob.glob("{0:s}*_map.json".format(dirname))
     map_list.sort()
 
-    for map_name in map_list:
-        print map_name
+    for map_fullname in map_list:
+        map_dir, map_name = path.split(map_fullname)
+        print map_name, map_dir
 
         sorted_names=[ [ [] for c in range(60) ] for r in range(60) ]
 
-     	with open('{0:s}{1:s}'.format(dirname, map_name)) \
-             as f:
+     	with open(map_fullname) as f:
             map_dict = json.load(f)
 
         for filename in map_dict:
@@ -27,7 +28,9 @@ def sorted_dict_make(dirname=""):
 
                     sorted_names[x][y] = filename
 
-     	with open('{0:s}{1:s}_map_sorted.json'.format(dirname, 
-                   map_name.split("_")[0]), "w") as f:
-            json.dump(sorted_names, f)        
+     	with open(path.join(map_dir, '{0:s}_map_sorted.json'.format(
+                  map_name.split("_")[0])), "w") as f:
+            json.dump(sorted_names, f)   
+
+
             
