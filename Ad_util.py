@@ -52,7 +52,7 @@ class map_regions:
 
             # get the block
             if l<215 and l>=30:
-                l_block = int(l/5.+0.5)*5
+                l_block = int(l/5.)*5
             else:
                 raise ValueError("l out of range covered by map")
 
@@ -63,17 +63,66 @@ class map_regions:
             else:
                 raise ValueError("b out of range covered by map")
 
-            blockname = "{0:d}{1:s}".format(l_block, b_block)
+            blockname = "{0:0>3d}{1:s}".format(l_block, b_block)
 
             # if block's dict hasn't been loaded, load it
             if blockname not in self.map_dicts:
 
             	with open(path.join(self.dirname, 
                      '{0:s}_map_sorted.json'.format(blockname))) as f:
-    	            self.map_dicts[blockname] = json.load(f) 
+    	            self.map_dicts[blockname] = np.array(json.load(f))
 
-            x = int((l%5)*12+0.5)
-            y = int((b%5)*12+0.5)
+            x = int((l%5)*12)
+            y = int((b%5)*12)
 
             return self.map_dicts[blockname][x][y]
             
+
+        if isinstance(l, np.ndarray) and isinstance(b, np.ndarray):
+
+            # get the blocks
+            if np.min(l)>=30 and np.max(l)<215:
+                l_block = np.floor(l/5.).astype(int)*5
+            else:
+                raise ValueError("l out of range covered by map")
+
+            if np.min(b)>=-5 and np.max(b)<5:
+                b_block = np.empty(b.shape, dtype=str)
+                b_block[b<0] = "a"
+                b_block[b>=0] = "b"
+            else:
+                raise ValueError("b out of range covered by map")
+
+            blocknames = np.core.defchararray.add(l_block.astype(str),
+                                                  b_block)
+
+            for i in range(blocknames.size):
+                blocknames[i] = "{0:0>4s}".format(blocknames[i])
+
+            x = np.floor((l%5)*12).astype("int")
+            y = np.floor((b%5)*12).astype("int")
+
+            filenames = np.empty(b.shape, dtype=object)
+
+            done_blocks = []
+
+            # check to see if required dict(s) have been loaded
+            for blockname in blocknames:
+                if blockname not in self.map_dicts:
+                # if not load it
+            	    with open(path.join(self.dirname, 
+                                '{0:s}_map_sorted.json'.format(
+                                blockname))) as f:
+        	            self.map_dicts[blockname] = np.array(
+                                                        json.load(f))
+
+                if blockname not in done_blocks:
+                    rows = blocknames==blockname
+                    filenames[rows] = (
+                        self.map_dicts[blockname][x[rows],y[rows]])
+
+                done_blocks.append(blockname)
+
+            return filenames
+                
+
