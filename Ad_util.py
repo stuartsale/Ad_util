@@ -1,8 +1,8 @@
-import numpy as np
-import json
-import math
 import glob
 import itertools
+import json
+import math
+import numpy as np
 from os import path
 
 def sorted_dict_make(dirname="data/"):
