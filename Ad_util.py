@@ -1,3 +1,4 @@
+from __future__ import print_function, division
 import glob
 import itertools
 import json
@@ -23,7 +24,7 @@ def sorted_dict_make(dirname="data/"):
 
     for map_fullname in map_list:
         map_dir, map_name = path.split(map_fullname)
-        print map_name, map_dir
+        print(map_name, map_dir)
 
         sorted_names=[ [ [] for c in range(60) ] for r in range(60) ]
 
