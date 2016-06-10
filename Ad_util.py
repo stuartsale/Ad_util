@@ -7,6 +7,17 @@ from os import path
 
 def sorted_dict_make(dirname="data/"):
 
+    """ sorted_dict_make(dirname="data/")
+
+
+        Parameters
+        ----------
+        dirname : string, optional
+            the location of the directory containing the data
+            files.
+
+    """
+
     map_list=glob.glob("{0:s}*_map.json".format(dirname))
     map_list.sort()
 
@@ -34,11 +45,26 @@ def sorted_dict_make(dirname="data/"):
 
 class map_regions:
 
-    """ class for querying which map file is associated with
+    """ Class map_regions
+        
+        A class for querying which map file is associated with
         a certain position on the sky.
+
+        Each object stores the data containing dictionaries 
+        it needs.
     """
 
     def __init__(self, dirname="data/"):
+        """ __init__(dirname="data/")
+
+            Initialise a map_regions object.
+
+            Parameters
+            ----------
+            dirname : string, optional
+                the location of the directory containing the 
+                data files.
+        """
 
         base_dir = _dir = path.dirname(__file__)
 
@@ -46,6 +72,26 @@ class map_regions:
         self.map_dicts = {}
 
     def query(self, l, b):
+        """ query(l,b)
+
+            Find the filename(s) which contain the extinction
+            distance relationships for some galactic
+            coordinate(s).
+
+            Parameters
+            ----------
+            l : float, ndarray(float)
+                The galactic longitude(s)
+            b : float, ndarray(float)
+                The galactic latitude(s)
+
+            Returns
+            -------
+            filenames : ndarray(string)
+                The filename(s) where the extinction-distance
+                relationships for the relevant coordinates 
+                can be found.
+        """
 
         # check we just have single floats for l&b
         if isinstance(l, float) and isinstance(b, float):
